@@ -51,7 +51,11 @@ Every feature follows the same shape — `app/(section)/[feature]/` with:
 
 Forms always use the `Controlled*` molecules with a `use-[feature]` hook (react-hook-form + zodResolver) — never raw `register()`.
 
-The full ruleset lives in `DESIGN.md` and the Claude Code skills in `.claude/skills/` (`design-rules`, `code-review`), which are wired in via `CLAUDE.md` / `AGENTS.md`.
+The full ruleset lives in `DESIGN.md` and the Claude Code skills in `.claude/skills/`, wired in via `CLAUDE.md` / `AGENTS.md`:
+
+- `design-rules` — the enforced conventions (server components, no `useEffect`, skeletons, service/hook rules)
+- `forms-and-services` — usage guide: the `Controlled*` form component reference, form/mutation hook templates, `lib/api` + `service.ts`/`types.ts` patterns, full worked example
+- `code-review` — review checklist for all of the above
 
 ## Backend contract
 

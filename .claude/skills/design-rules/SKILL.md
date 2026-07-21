@@ -32,6 +32,10 @@ user-invocable: true
 
 ## Backend Communication Patterns
 
+> Full usage guide — including the Controlled* form component reference and a
+> complete worked example — lives in the `forms-and-services` skill. The sections
+> below are the enforced rules.
+
 ### Implementing a new endpoint — always follow this order
 1. Fetch the backend's API docs (e.g. the Swagger UI at `${BASE_URL}/docs` — set the real URL for your backend here) and find the endpoint to confirm the HTTP method, path, request body, and response shape
 2. Create `types.ts` with Zod schemas derived from the actual response (use `paginatedApiResponse` for list endpoints, `apiResponse` for single-resource endpoints, plain `z.object` for non-API-envelope shapes)
