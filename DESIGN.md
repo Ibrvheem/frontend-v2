@@ -1,115 +1,115 @@
-# Design System
+# Qoollege Design Rules
 
-## Identity
-- **Font**: Geist (neutral default) — swap in `app/layout.tsx`; keep the `--font-sans` variable name
-- **Border radius**: `0rem` everywhere — all corners are sharp, never add `rounded-*`
-- **Primary color**: neutral near-white on dark — swap the `--primary` (and `--sidebar-primary`) tokens in `globals.css` for your brand color
+The UI is the product. These rules are not suggestions. If a screen breaks one, fix the screen, not the rule.
+If a rule is genuinely wrong, change it here first, then change the code.
 
-## Semantic Color Tokens
-Defined in `globals.css` (`:root` + `.dark`) and registered in `@theme inline`.
-Use these instead of Tailwind built-in colors for consistency.
+## 1. The feel
 
-| Token     | Tailwind class  | Meaning                                   |
-|-----------|-----------------|-------------------------------------------|
-| `gold`    | `text-gold`     | Highlights, rankings, premium accents     |
-| `win`     | `text-win`      | Success states, positive values           |
-| `loss`    | `text-loss`     | Errors, destructive states, negative values |
-| `social`  | `text-social`   | Informational accents, secondary stats    |
-| `primary` | `text-primary`  | Key stats, active states, CTAs            |
+**Calm and clean.** Students and parents come here stressed about college. The app should feel quiet, clear and in control.
 
-Use `/10` and `/20` opacity variants for badge backgrounds and borders:
-```tsx
-<span className="text-gold bg-gold/10 border border-gold/20 px-2 py-0.5">Featured</span>
-```
+- Lots of white space. When in doubt, add space, remove a border.
+- One strong colour (brand blue). Everything else is neutral.
+- One job per screen. One primary button per screen.
+- Content first. No decoration that doesn't help someone understand or act.
 
-## Corner Accent Brackets — `<CornerAccents />`
-`components/ui/corner-accents.tsx`
+## 2. Colour
 
-White L-shaped corner brackets drawn via a single CSS background-gradient span.
-Use on cards, stat boxes, panels, and any bordered container that warrants premium feel.
+Only use tokens. Never raw Tailwind colours (`bg-blue-500`, `text-gray-600`) and never hex in components.
 
-```tsx
-import { CornerAccents } from "@/components/ui/corner-accents";
+| Token | Use it for |
+|---|---|
+| `primary` (#057dcd) | Primary buttons, active nav, focus rings, key highlights |
+| `primary-text` (darker blue) | Links and small blue text (keeps contrast readable) |
+| `background` | Page background (off-white) |
+| `card` | Cards, panels, popovers (white) |
+| `foreground` | Main text (near-black, not pure black) |
+| `muted-foreground` | Secondary text, labels, hints |
+| `border` | All borders and dividers (one light grey) |
+| `success` / `warning` / `danger` / `info` | Status only: badges, alerts, form errors. Never decoration. |
 
-// Parent requirements:
-<div className="relative border border-border ...">   {/* relative — required */}
-  <CornerAccents />                                   {/* always first child */}
-  {/* no overflow-hidden on this div */}
-  ...
-</div>
-```
+Rules:
+- Blue is earned. If everything is blue, nothing is. Max one filled blue button per screen.
+- Status colours come as a pair: soft background + strong text, e.g. `bg-success/10 text-success`.
+- No gradients, no glows, no coloured shadows.
+- Light mode first. Every colour is a token so dark mode can be added later without touching components.
 
-**Rules:**
-- Parent must have `position: relative` (or the `inset-highlight` class)
-- Parent must **NOT** have `overflow: hidden` — image overflow should be scoped to a child wrapper instead
-- Uses 4 spans with **inline pixel styles** (`top: -2`, `bottom: -2`, etc.) — not Tailwind classes — to avoid rem scaling and the global `.border { border-width: 2px }` override
+## 3. Type
 
-## Entrance Animations — `StaggerReveal` / `StaggerItem`
-`components/motion/stagger-reveal.tsx` — client component (Framer Motion)
+- **Inter, and only Inter**, for the whole app. No second display font, no per-page fonts.
+- A fixed scale. Only these sizes:
 
-```tsx
-import { StaggerReveal, StaggerItem } from "@/components/motion/stagger-reveal";
+| Role | Class | Weight |
+|---|---|---|
+| Page title | `text-2xl` | semibold |
+| Section title | `text-lg` | semibold |
+| Body | `text-sm` (14px) | normal |
+| Small / labels | `text-xs` (12px) | medium |
+| Big numbers (stats) | `text-3xl` | semibold, `tabular-nums` |
 
-<StaggerReveal className="grid grid-cols-3 gap-4">
-  {items.map((item) => (
-    <StaggerItem key={item.id} className="h-full">
-      <Card ... />
-    </StaggerItem>
-  ))}
-</StaggerReveal>
-```
+- Max 2 weights on a screen (normal + semibold). No bold, no light.
+- Sentence case everywhere: "Add a task", not "Add A Task". No ALL CAPS except tiny labels.
+- Line length max ~70 characters for reading text (`max-w-prose`).
 
-Use for grids and lists that benefit from a staggered entrance (60ms per item, fade + y:12→0).
+## 4. Spacing and layout
 
-## CSS Utility Classes (`globals.css`)
+- 4px grid. Use Tailwind spacing steps only: 1, 2, 3, 4, 6, 8, 12, 16. No arbitrary values like `p-[13px]`.
+- Page padding: `p-6` desktop, `p-4` mobile.
+- Space between sections: `gap-8`. Inside a card: `p-6`, items `gap-4`.
+- Content width: pages max `max-w-6xl`, forms max `max-w-lg`.
+- Every screen works at 375px wide. Mobile is not an afterthought; parents use phones.
 
-| Class             | Effect                                                     |
-|-------------------|------------------------------------------------------------|
-| `.glow-primary`   | Soft box-shadow glow — use on featured/highlighted cards   |
-| `.hover-lift`     | `translateY(-2px)` + shadow on hover, 200ms ease           |
-| `.inset-highlight`| Subtle top-edge inner highlight via `::before`; sets `position: relative` |
-| `.corner-accent-box` | Applied by `<CornerAccents />` — do not use directly     |
-| `.auth-input`     | Focus ring glow for the auth screens' inputs               |
-| `.cta-btn`        | Sweep-sheen hover effect for primary CTA buttons           |
+## 5. Shape and depth
 
-## Card Patterns
+- Radius: `rounded-lg` (8px) for cards, dialogs, buttons and inputs. `rounded-md` (6px) for small bits like badges and menu items. Nothing else. No pills, no `rounded-full` except avatars.
+- Buttons and inputs are 40px tall (`h-10`) by default.
+- Separate things with space first, a border second, a shadow last.
+- Shadows only on things that float: dropdowns, popovers, dialogs (`shadow-lg`). Cards are flat with a border.
 
-### Standard card
-```tsx
-<div className="relative bg-card border border-border">
-  <CornerAccents />
-  ...
-</div>
-```
+## 6. Components
 
-### Interactive card (hover-lift)
-```tsx
-<div className="relative bg-card border border-border hover-lift hover:border-primary/30 transition-colors">
-  <CornerAccents />
-  ...
-</div>
-```
+- Build from `components/ui` (shadcn). Never restyle a component inline to make it look different. If a variant is missing, add it to the component.
+- Buttons: `default` (blue, one per screen), `outline` (secondary actions), `ghost` (tertiary, toolbars), `destructive` (only for delete). Labels are verbs: "Save changes", "Add task".
+- Forms: label above input, hint below in `muted-foreground`, error below in `danger`. Never placeholder-as-label.
+- **No icons by default.** Use text labels. An icon is only added when Ibrahim has approved that specific icon in that specific place. When approved: lucide only, `size-4` inline, `size-5` standalone, always with a text label or `aria-label`.
+- Tables for data people compare; cards for things people act on.
 
-### Stat card
-```tsx
-<div className="bg-card border border-border border-t-2 border-t-gold inset-highlight flex flex-col items-center justify-center py-4 gap-1">
-  <CornerAccents />
-  <span className="text-xl font-semibold tabular-nums text-gold">{value}</span>
-  <span className="text-xs text-muted-foreground uppercase tracking-wide">{label}</span>
-</div>
-```
+## 7. Every state is designed
 
-### Image overflow fix
-When a card has a hover-zoom image, do NOT put `overflow-hidden` on the card root.
-Scope it to the image wrapper:
-```tsx
-<div className="relative bg-card border border-border">  {/* no overflow-hidden here */}
-  <CornerAccents />
-  <div className="overflow-hidden">                       {/* scoped to image only */}
-    <img className="w-full h-auto hover:scale-[1.02] transition-transform duration-700" />
-  </div>
-  <div className="absolute -bottom-10 left-6">           {/* avatar — not clipped */}
-    ...
-  </div>
-</div>
-```
+A screen is not done until all of these look intentional:
+- **Loading**: a `Skeleton` that matches the real layout. Never a blank screen, never a lone spinner for page content.
+- **Empty**: a short sentence saying what goes here + the one action to fill it.
+- **Error**: what went wrong in plain words + what to do next. Never a raw error message or code.
+- **Success**: a toast for small actions; a clear confirmation screen for big ones (payments, submissions).
+
+## 8. Words
+
+- Plain, short, friendly. Write like a helpful counsellor, not a system.
+- No emojis anywhere in the UI.
+- No em dashes in copy. Use a full stop or a comma.
+- Name things by what they do for the user, not by our internal names.
+- Important warnings are visible (alert component), never buried in grey small print.
+
+## 9. Motion
+
+- Motion explains, it doesn't decorate. Use it for things appearing, moving or changing state.
+- Short: 150–200ms for UI feedback, max 300ms for larger transitions. Ease-out.
+- No bouncing, no looping animations, no parallax.
+- Respect `prefers-reduced-motion`.
+
+## 10. Accessibility (non-negotiable)
+
+- Text contrast at least 4.5:1. That's why small blue text uses `primary-text`, not `primary`.
+- Everything works with a keyboard, with a visible focus ring (`ring-primary`).
+- Click targets at least 40px tall.
+- Every input has a label, every icon-only button has an `aria-label`, every image has `alt`.
+
+## Banned
+
+- Raw colours, hex values or arbitrary values in components
+- Any font other than Inter
+- Icons that haven't been explicitly approved
+- Gradients, glows, coloured shadows, glassmorphism
+- Emojis and em dashes in copy
+- `useEffect` for data fetching
+- A screen without loading, empty and error states
+- Two filled blue buttons on the same screen

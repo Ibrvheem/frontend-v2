@@ -4,11 +4,11 @@ description: Enforce component patterns, Tailwind conventions, and naming standa
 user-invocable: true
 ---
 
-## Rule #1 — No Rounded Borders. Ever.
-- **Never** use `rounded`, `rounded-*`, `border-radius`, or any CSS that curves corners
-- This applies everywhere: buttons, cards, inputs, modals, images, avatars, tags — no exceptions
-- If you see `rounded` in any Tailwind class, remove it
-- If you see `border-radius` in any CSS/style prop, remove it
+## Rule #1 — Follow DESIGN.md
+- `DESIGN.md` at the repo root is the source of truth for how the UI looks (colour, type, spacing, radius, states, copy, icons)
+- Read it before building or changing any UI
+- Rounding: `rounded-lg` for cards, dialogs, buttons, inputs; `rounded-md` for small bits. Nothing else
+- No icons unless Ibrahim approved that specific icon in that spot
 
 ## Rule #2 — Pages and Layouts Are Always Server Components
 - `page.tsx` and `layout.tsx` files must never have `"use client"`
